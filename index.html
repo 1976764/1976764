@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -8,886 +7,1081 @@
 <title>CARY_A — Software Developer</title>
 
 <style>
-    :root {
-        --black: #f2f2ef;
-        --white: #111111;
-        --gray: #999999;
-        --line: #3a3a38;
-        --red: #e30613;
-    
-        --page-padding: clamp(20px, 4vw, 72px);
-        --gap: clamp(16px, 2vw, 32px);
-    
-        color-scheme: dark;
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+body {
+    background: #090909;
+    color: #f1f0eb;
+
+    font-family:
+        "Helvetica Neue",
+        Helvetica,
+        Arial,
+        sans-serif;
+
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+}
+
+
+/* =========================================================
+   MAIN CANVAS
+========================================================= */
+
+.page {
+    position: relative;
+
+    width: 100vw;
+    height: 100vh;
+
+    min-height: 600px;
+
+    overflow: hidden;
+
+    background:
+        #090909;
+}
+
+
+/* =========================================================
+   CENTRAL LIGHT
+========================================================= */
+
+.center {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: min(46vw, 760px);
+    height: min(62vh, 700px);
+
+    transform: translate(-50%, -50%);
+
+    background: #f2f0e9;
+
+    color: #111;
+
+    /*
+       不规则中心区域
+       模拟四周矩形不断侵入
+    */
+    clip-path: polygon(
+        18% 0%,
+        82% 0%,
+        82% 7%,
+        92% 7%,
+        92% 20%,
+        100% 20%,
+        100% 80%,
+        92% 80%,
+        92% 92%,
+        82% 92%,
+        82% 100%,
+        18% 100%,
+        18% 94%,
+        8% 94%,
+        8% 82%,
+        0% 82%,
+        0% 20%,
+        8% 20%,
+        8% 8%,
+        18% 8%
+    );
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 5;
+
+    box-shadow:
+        0 0 80px rgba(242, 240, 233, 0.12);
+
+    animation: centerAppear 1.1s ease-out both;
+}
+
+@keyframes centerAppear {
+    from {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            scale(0.96);
     }
 
-    * {
-        box-sizing: border-box;
+    to {
+        opacity: 1;
+        transform:
+            translate(-50%, -50%)
+            scale(1);
+    }
+}
+
+
+/* =========================================================
+   CENTER CONTENT
+========================================================= */
+
+.center-content {
+    width: 70%;
+
+    text-align: center;
+
+    transform: translateY(-2%);
+}
+
+.name {
+    margin: 0;
+
+    font-size: clamp(42px, 5vw, 82px);
+
+    font-weight: 600;
+
+    letter-spacing:
+        0.28em;
+
+    line-height: 0.95;
+
+    white-space: nowrap;
+}
+
+.name span {
+    color: #ed1c24;
+}
+
+.role {
+    margin-top: 28px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    letter-spacing:
+        0.32em;
+
+    text-transform: uppercase;
+}
+
+.center-line {
+    width: 28px;
+    height: 2px;
+
+    margin: 32px auto 0;
+
+    background: #ed1c24;
+}
+
+
+/* =========================================================
+   DARK BLOCKS
+========================================================= */
+
+.blocks {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 10;
+
+    pointer-events: none;
+}
+
+
+/*
+   通用矩形
+*/
+
+.block {
+    position: absolute;
+
+    background:
+        linear-gradient(
+            135deg,
+            #151515,
+            #0b0b0b
+        );
+
+    border: 1px solid #252525;
+
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.45);
+
+    transition:
+        transform 0.4s ease,
+        background 0.4s ease;
+}
+
+
+/* =========================================================
+   TOP
+========================================================= */
+
+.top-left {
+    left: 0;
+    top: 0;
+
+    width: 50%;
+    height: 29%;
+}
+
+.top-center {
+    left: 50%;
+    top: 0;
+
+    width: 27%;
+    height: 18%;
+}
+
+.top-right {
+    right: 0;
+    top: 0;
+
+    width: 22%;
+    height: 32%;
+}
+
+
+/* =========================================================
+   LEFT
+========================================================= */
+
+.left-upper {
+    left: 0;
+    top: 29%;
+
+    width: 25%;
+    height: 28%;
+}
+
+.left-middle {
+    left: 12%;
+    top: 44%;
+
+    width: 28%;
+    height: 22%;
+}
+
+.left-lower {
+    left: 0;
+    bottom: 0;
+
+    width: 37%;
+    height: 28%;
+}
+
+.left-bottom-small {
+    left: 37%;
+    bottom: 0;
+
+    width: 13%;
+    height: 18%;
+}
+
+
+/* =========================================================
+   RIGHT
+========================================================= */
+
+.right-upper {
+    right: 0;
+    top: 32%;
+
+    width: 24%;
+    height: 23%;
+}
+
+.right-middle {
+    right: 8%;
+    top: 45%;
+
+    width: 27%;
+    height: 26%;
+}
+
+.right-lower {
+    right: 0;
+    bottom: 0;
+
+    width: 30%;
+    height: 32%;
+}
+
+
+/* =========================================================
+   BOTTOM
+========================================================= */
+
+.bottom-center {
+    left: 36%;
+    bottom: 0;
+
+    width: 28%;
+    height: 21%;
+}
+
+.bottom-right-small {
+    right: 30%;
+    bottom: 0;
+
+    width: 18%;
+    height: 13%;
+}
+
+
+/* =========================================================
+   SMALL INNER BLOCKS
+========================================================= */
+
+.inner {
+    position: absolute;
+
+    background: #101010;
+
+    border: 1px solid #292929;
+
+    z-index: 20;
+}
+
+.inner-1 {
+    left: 25%;
+    top: 29%;
+
+    width: 9%;
+    height: 15%;
+}
+
+.inner-2 {
+    left: 32%;
+    top: 36%;
+
+    width: 8%;
+    height: 20%;
+}
+
+.inner-3 {
+    left: 40%;
+    top: 27%;
+
+    width: 7%;
+    height: 13%;
+}
+
+.inner-4 {
+    right: 24%;
+    top: 31%;
+
+    width: 9%;
+    height: 16%;
+}
+
+.inner-5 {
+    right: 30%;
+    top: 47%;
+
+    width: 10%;
+    height: 13%;
+}
+
+.inner-6 {
+    left: 24%;
+    bottom: 23%;
+
+    width: 9%;
+    height: 14%;
+}
+
+.inner-7 {
+    right: 28%;
+    bottom: 22%;
+
+    width: 11%;
+    height: 17%;
+}
+
+.inner-8 {
+    left: 37%;
+    bottom: 20%;
+
+    width: 8%;
+    height: 12%;
+}
+
+
+/* =========================================================
+   TEXT LAYERS
+========================================================= */
+
+.info {
+    position: absolute;
+
+    z-index: 30;
+
+    max-width: 240px;
+}
+
+.info-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin-bottom: 22px;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    letter-spacing:
+        0.28em;
+
+    text-transform: uppercase;
+
+    color: #b5b5b5;
+}
+
+.info-title::before {
+    content: "";
+
+    width: 28px;
+    height: 2px;
+
+    background: #ed1c24;
+}
+
+.info p {
+    margin: 0;
+
+    color: #858585;
+
+    font-size: 13px;
+
+    line-height: 1.8;
+
+    letter-spacing:
+        0.02em;
+}
+
+
+/* =========================================================
+   ABOUT
+========================================================= */
+
+.about {
+    left: 6.2%;
+    top: 15%;
+
+    width: 230px;
+}
+
+
+/* =========================================================
+   FOCUS
+========================================================= */
+
+.focus {
+    right: 6.2%;
+    top: 14%;
+
+    width: 190px;
+}
+
+.focus ul {
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+.focus li {
+    padding: 7px 0;
+
+    border-bottom:
+        1px solid #252525;
+
+    color: #858585;
+
+    font-size: 12px;
+
+    letter-spacing:
+        0.03em;
+}
+
+
+/* =========================================================
+   EXPERIENCE
+========================================================= */
+
+.experience {
+    left: 6.2%;
+    top: 61%;
+
+    width: 210px;
+
+    writing-mode: vertical-rl;
+
+    transform:
+        rotate(180deg);
+}
+
+.experience .info-title {
+    margin-bottom: 18px;
+}
+
+
+/* =========================================================
+   PHILOSOPHY
+========================================================= */
+
+.philosophy {
+    right: 6.2%;
+    top: 59%;
+
+    width: 210px;
+
+    writing-mode: vertical-rl;
+}
+
+.philosophy .info-title {
+    margin-bottom: 18px;
+}
+
+
+/* =========================================================
+   TECH STACK
+========================================================= */
+
+.stack {
+    position: absolute;
+
+    left: 6.2%;
+    bottom: 10%;
+
+    z-index: 30;
+
+    width: 270px;
+}
+
+.stack-title {
+    margin-bottom: 20px;
+
+    font-size: 11px;
+
+    color: #999;
+
+    letter-spacing:
+        0.3em;
+
+    text-transform: uppercase;
+}
+
+.stack-list {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 7px 18px;
+}
+
+.stack-list span {
+    color: #777;
+
+    font-size: 12px;
+
+    letter-spacing:
+        0.03em;
+}
+
+
+/* =========================================================
+   CONNECT
+========================================================= */
+
+.connect {
+    position: absolute;
+
+    right: 6.2%;
+    bottom: 10%;
+
+    z-index: 30;
+
+    width: 250px;
+}
+
+.connect-title {
+    margin-bottom: 20px;
+
+    font-size: 11px;
+
+    color: #999;
+
+    letter-spacing:
+        0.3em;
+
+    text-transform: uppercase;
+}
+
+.connect a {
+    display: block;
+
+    padding: 6px 0;
+
+    color: #777;
+
+    font-size: 12px;
+
+    text-decoration: none;
+
+    transition:
+        color 0.2s ease;
+}
+
+.connect a:hover {
+    color: #f1f0eb;
+}
+
+.connect a::before {
+    content: "↗";
+
+    margin-right: 12px;
+
+    color: #ed1c24;
+}
+
+
+/* =========================================================
+   CORNER NUMBERS
+========================================================= */
+
+.number {
+    position: absolute;
+
+    z-index: 40;
+
+    color: #ed1c24;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    letter-spacing:
+        0.15em;
+}
+
+.number-01 {
+    left: 6.2%;
+    top: 9%;
+}
+
+.number-02 {
+    right: 6.2%;
+    top: 9%;
+}
+
+.number-03 {
+    left: 6.2%;
+    bottom: 7%;
+}
+
+.number-04 {
+    right: 6.2%;
+    bottom: 7%;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer {
+    position: absolute;
+
+    left: 50%;
+    bottom: 4.5%;
+
+    transform:
+        translateX(-50%);
+
+    z-index: 40;
+
+    color: #777;
+
+    font-size: 9px;
+
+    letter-spacing:
+        0.4em;
+
+    white-space: nowrap;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+.block {
+    animation:
+        blockAppear 0.9s cubic-bezier(.2,.8,.2,1) both;
+}
+
+@keyframes blockAppear {
+
+    from {
+        opacity: 0;
+        transform: scale(1.03);
     }
 
-    html {
-        scroll-behavior: smooth;
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 
-    body {
-        margin: 0;
-        background: var(--white);
-        color: var(--black);
+}
 
-        font-family:
-            "Helvetica Neue",
-            Helvetica,
-            Arial,
-            sans-serif;
 
-        font-weight: 400;
-        line-height: 1.25;
-    }
+/* =========================================================
+   MOBILE
+========================================================= */
 
-    a {
-        color: inherit;
-        text-decoration: none;
-    }
-
-    /* =========================
-       GRID
-    ========================= */
-
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        column-gap: var(--gap);
-    }
+@media (max-width: 800px) {
 
     .page {
-        padding-left: var(--page-padding);
-        padding-right: var(--page-padding);
+        min-height: 520px;
     }
 
-    /* =========================
-       HEADER
-    ========================= */
-
-    header {
-        min-height: 100vh;
-
-        display: grid;
-        grid-template-rows: auto 1fr auto;
-
-        padding-top: 28px;
-        padding-bottom: 32px;
-
-        border-bottom: 2px solid var(--black);
+    .center {
+        width: 72vw;
+        height: 58vh;
     }
 
-    .topbar {
-        display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        column-gap: var(--gap);
-
-        font-size: 13px;
-        font-weight: 500;
-        letter-spacing: 0.02em;
+    .name {
+        font-size: clamp(30px, 7vw, 52px);
+        letter-spacing: 0.18em;
     }
 
-    .logo {
-        grid-column: 1 / 4;
-        font-weight: 700;
+    .role {
+        font-size: 9px;
+        letter-spacing: 0.2em;
     }
 
-    .top-info {
-        grid-column: 10 / 13;
-        text-align: right;
+    .about {
+        left: 5%;
+        top: 12%;
+
+        width: 150px;
     }
 
-    /* =========================
-       HERO
-    ========================= */
+    .focus {
+        right: 5%;
+        top: 12%;
 
-    .hero {
-        align-self: center;
-
-        display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        column-gap: var(--gap);
+        width: 140px;
     }
 
-    .hero-number {
-        grid-column: 1 / 3;
-
-        font-size: clamp(16px, 1.4vw, 22px);
-        color: var(--red);
-
-        font-weight: 700;
+    .about p,
+    .focus li {
+        font-size: 10px;
     }
 
-    .hero-content {
-        grid-column: 3 / 13;
+    .experience,
+    .philosophy {
+        display: none;
     }
-
-    .hero h1 {
-        margin: 0;
-
-        font-size: clamp(64px, 12vw, 190px);
-        line-height: 0.82;
-
-        font-weight: 700;
-        letter-spacing: -0.075em;
-    }
-
-    .hero-subtitle {
-        margin-top: 45px;
-
-        max-width: 650px;
-
-        font-size: clamp(22px, 3vw, 42px);
-        line-height: 1.05;
-
-        font-weight: 400;
-        letter-spacing: -0.025em;
-    }
-
-    .hero-subtitle span {
-        color: var(--gray);
-    }
-
-    /* =========================
-       META
-    ========================= */
-
-    .hero-meta {
-        display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        column-gap: var(--gap);
-
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-    }
-
-    .meta-left {
-        grid-column: 1 / 5;
-    }
-
-    .meta-right {
-        grid-column: 10 / 13;
-        text-align: right;
-    }
-
-    /* =========================
-       SECTIONS
-    ========================= */
-
-    section {
-        padding-top: 110px;
-        padding-bottom: 110px;
-
-        border-bottom: 1px solid var(--black);
-    }
-
-    .section-label {
-        grid-column: 1 / 3;
-
-        font-size: 13px;
-        font-weight: 700;
-
-        color: var(--red);
-    }
-
-    .section-content {
-        grid-column: 3 / 13;
-    }
-
-    .section-title {
-        margin: 0 0 55px;
-
-        font-size: clamp(42px, 6vw, 88px);
-        line-height: 0.9;
-
-        letter-spacing: -0.055em;
-        font-weight: 700;
-    }
-
-    /* =========================
-       ABOUT
-    ========================= */
-
-    .about-text {
-        max-width: 900px;
-
-        font-size: clamp(24px, 3vw, 44px);
-        line-height: 1.08;
-
-        letter-spacing: -0.025em;
-    }
-
-    /* =========================
-       PROJECTS
-    ========================= */
-
-    .project {
-        display: grid;
-
-        grid-template-columns:
-            70px
-            minmax(180px, 1fr)
-            minmax(200px, 1.2fr)
-            120px;
-
-        column-gap: 25px;
-
-        padding: 25px 0;
-
-        border-top: 1px solid var(--line);
-
-        transition:
-            padding-left 0.25s ease,
-            background 0.25s ease;
-    }
-
-    .project:last-child {
-        border-bottom: 1px solid var(--line);
-    }
-
-    .project:hover {
-        padding-left: 14px;
-    }
-
-    .project-number {
-        color: var(--red);
-        font-weight: 700;
-    }
-
-    .project-name {
-        font-size: 22px;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-    }
-
-    .project-description {
-        color: #555;
-        font-size: 14px;
-        line-height: 1.4;
-    }
-
-    .project-link {
-        text-align: right;
-
-        font-size: 12px;
-        font-weight: 700;
-
-        text-transform: uppercase;
-    }
-
-    .project-link::after {
-        content: " ↗";
-        color: var(--red);
-    }
-
-    /* =========================
-       STACK
-    ========================= */
 
     .stack {
-        display: grid;
+        left: 5%;
+        bottom: 9%;
 
-        grid-template-columns:
-            repeat(3, 1fr);
-
-        gap: 0;
-
-        border-top: 1px solid var(--black);
+        width: 160px;
     }
 
-    .stack-item {
-        min-height: 150px;
+    .connect {
+        right: 5%;
+        bottom: 9%;
 
-        padding: 22px;
-
-        border-right: 1px solid var(--black);
-        border-bottom: 1px solid var(--black);
+        width: 150px;
     }
 
-    .stack-item:nth-child(3n) {
-        border-right: none;
+    .stack-list {
+        gap: 4px 10px;
     }
 
-    .stack-number {
-        color: var(--red);
-
-        font-size: 12px;
-        font-weight: 700;
+    .stack-list span,
+    .connect a {
+        font-size: 9px;
     }
 
-    .stack-name {
-        margin-top: 40px;
+    .footer {
+        display: none;
+    }
+}
 
-        font-size: 28px;
 
-        font-weight: 700;
-        letter-spacing: -0.04em;
+/* =========================================================
+   VERY SMALL SCREEN
+========================================================= */
+
+@media (max-width: 500px) {
+
+    .center {
+        width: 76vw;
+        height: 52vh;
     }
 
-    /* =========================
-       PRINCIPLES
-    ========================= */
-
-    .principle {
-        display: grid;
-
-        grid-template-columns: 70px 1fr;
-
-        padding: 25px 0;
-
-        border-top: 1px solid var(--line);
+    .about p {
+        display: none;
     }
 
-    .principle:last-child {
-        border-bottom: 1px solid var(--line);
+    .focus ul {
+        display: none;
     }
 
-    .principle-number {
-        color: var(--red);
-        font-weight: 700;
+    .about,
+    .focus {
+        width: auto;
     }
 
-    .principle-title {
-        font-size: clamp(35px, 5vw, 75px);
-
-        font-weight: 700;
-
-        line-height: 0.9;
-
-        letter-spacing: -0.055em;
+    .about .info-title,
+    .focus .info-title {
+        margin: 0;
     }
 
-    /* =========================
-       FOOTER
-    ========================= */
-
-    footer {
-        padding-top: 35px;
-        padding-bottom: 35px;
+    .stack {
+        width: 130px;
     }
 
-    .footer-grid {
-        display: grid;
-
-        grid-template-columns:
-            repeat(12, 1fr);
-
-        column-gap: var(--gap);
-
-        align-items: end;
+    .connect {
+        width: 120px;
     }
 
-    .footer-name {
-        grid-column: 1 / 6;
-
-        font-size: 18px;
-        font-weight: 700;
+    .number {
+        font-size: 9px;
     }
 
-    .footer-slogan {
-        grid-column: 6 / 10;
-
-        font-size: 13px;
-        color: var(--gray);
-    }
-
-    .footer-link {
-        grid-column: 10 / 13;
-
-        text-align: right;
-
-        font-size: 13px;
-        font-weight: 700;
-    }
-
-    .footer-link::after {
-        content: " ↗";
-        color: var(--red);
-    }
-
-    /* =========================
-       RESPONSIVE
-    ========================= */
-
-    @media (max-width: 800px) {
-
-        .top-info {
-            grid-column: 8 / 13;
-        }
-
-        .hero-number {
-            grid-column: 1 / 3;
-        }
-
-        .hero-content {
-            grid-column: 3 / 13;
-        }
-
-        .section-label {
-            grid-column: 1 / 13;
-
-            margin-bottom: 25px;
-        }
-
-        .section-content {
-            grid-column: 1 / 13;
-        }
-
-        .project {
-            grid-template-columns:
-                45px
-                1fr
-                70px;
-        }
-
-        .project-description {
-            display: none;
-        }
-
-        .stack {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .stack-item:nth-child(3n) {
-            border-right: 1px solid var(--black);
-        }
-
-        .stack-item:nth-child(2n) {
-            border-right: none;
-        }
-
-        .footer-name {
-            grid-column: 1 / 6;
-        }
-
-        .footer-slogan {
-            grid-column: 6 / 10;
-        }
-
-        .footer-link {
-            grid-column: 10 / 13;
-        }
-    }
-
-    @media (max-width: 520px) {
-
-        header {
-            min-height: 90vh;
-        }
-
-        .hero h1 {
-            font-size: 22vw;
-        }
-
-        .hero-subtitle {
-            margin-top: 30px;
-            font-size: 25px;
-        }
-
-        .hero-number {
-            grid-column: 1 / 3;
-        }
-
-        .hero-content {
-            grid-column: 3 / 13;
-        }
-
-        section {
-            padding-top: 70px;
-            padding-bottom: 70px;
-        }
-
-        .section-title {
-            margin-bottom: 35px;
-        }
-
-        .stack {
-            grid-template-columns: 1fr;
-        }
-
-        .stack-item,
-        .stack-item:nth-child(2n),
-        .stack-item:nth-child(3n) {
-            border-right: none;
-        }
-
-        .footer-grid {
-            row-gap: 25px;
-        }
-
-        .footer-name,
-        .footer-slogan,
-        .footer-link {
-            grid-column: 1 / 13;
-            text-align: left;
-        }
-    }
+}
 </style>
-
 </head>
+
 
 <body>
 
 <div class="page">
 
-<header>
 
-```
-<div class="topbar">
+    <!-- =====================================================
+         CENTRAL LIGHT AREA
+    ====================================================== -->
 
-    <div class="logo">
-        CARY_A
-    </div>
+    <main class="center">
 
-    <div class="top-info">
-        SOFTWARE / 2026
-    </div>
+        <div class="center-content">
 
-</div>
+            <h1 class="name">
+                CARY<span>_</span>A
+            </h1>
 
+            <div class="role">
+                Software Developer
+            </div>
 
-<div class="hero">
-
-    <div class="hero-number">
-        01
-    </div>
-
-    <div class="hero-content">
-
-        <h1>
-            CARY<br>
-            <span style="color:#e30613;">_A</span>
-        </h1>
-
-        <div class="hero-subtitle">
-            Software developer
-            <span>working across mobile,
-            backend and experimental systems.</span>
-        </div>
-
-    </div>
-
-</div>
-
-
-<div class="hero-meta">
-
-    <div class="meta-left">
-        ANDROID · PYTHON · BACKEND
-    </div>
-
-    <div class="meta-right">
-        BASED IN THE DIGITAL WORLD
-    </div>
-
-</div>
-```
-
-</header>
-
-<!-- ABOUT -->
-
-<section>
-
-```
-<div class="grid">
-
-    <div class="section-label">
-        02 / ABOUT
-    </div>
-
-    <div class="section-content">
-
-        <h2 class="section-title">
-            BUILD<br>
-            THINGS.
-        </h2>
-
-        <div class="about-text">
-
-            I build software, tools and experiments
-            across different layers of technology.
-
-            From Android applications and backend
-            systems to hardware interfaces and games.
+            <div class="center-line"></div>
 
         </div>
 
+    </main>
+
+
+    <!-- =====================================================
+         DARK ARCHITECTURAL BLOCKS
+    ====================================================== -->
+
+    <div class="blocks">
+
+        <div class="block top-left"></div>
+        <div class="block top-center"></div>
+        <div class="block top-right"></div>
+
+        <div class="block left-upper"></div>
+        <div class="block left-middle"></div>
+        <div class="block left-lower"></div>
+        <div class="block left-bottom-small"></div>
+
+        <div class="block right-upper"></div>
+        <div class="block right-middle"></div>
+        <div class="block right-lower"></div>
+
+        <div class="block bottom-center"></div>
+        <div class="block bottom-right-small"></div>
+
+        <div class="inner inner-1"></div>
+        <div class="inner inner-2"></div>
+        <div class="inner inner-3"></div>
+        <div class="inner inner-4"></div>
+        <div class="inner inner-5"></div>
+        <div class="inner inner-6"></div>
+        <div class="inner inner-7"></div>
+        <div class="inner inner-8"></div>
+
     </div>
 
-</div>
-```
 
-</section>
+    <!-- =====================================================
+         NUMBERS
+    ====================================================== -->
 
-<!-- PROJECTS -->
-
-<section>
-
-```
-<div class="grid">
-
-    <div class="section-label">
-        03 / WORK
-    </div>
-
-    <div class="section-content">
-
-        <h2 class="section-title">
-            SELECTED<br>
-            PROJECTS
-        </h2>
+    <div class="number number-01">01</div>
+    <div class="number number-02">02</div>
+    <div class="number number-03">03</div>
+    <div class="number number-04">04</div>
 
 
-        <div class="project">
+    <!-- =====================================================
+         ABOUT
+    ====================================================== -->
 
-            <div class="project-number">
-                01
-            </div>
+    <section class="info about">
 
-            <div class="project-name">
-                JM Comic Android
-            </div>
+        <div class="info-title">
+            About Me
+        </div>
 
-            <div class="project-description">
-                Android application project
-                focused on a native mobile experience.
-            </div>
+        <p>
+            Software developer focused on
+            building practical tools,
+            applications and experimental
+            systems.
+        </p>
 
-            <a
-                class="project-link"
-                href="https://github.com/1976764/jm-comic-android"
-                target="_blank">
-                VIEW
-            </a>
+    </section>
+
+
+    <!-- =====================================================
+         FOCUS
+    ====================================================== -->
+
+    <section class="info focus">
+
+        <div class="info-title">
+            Focus
+        </div>
+
+        <ul>
+            <li>Android Development</li>
+            <li>Backend Systems</li>
+            <li>Developer Tools</li>
+            <li>Game Development</li>
+        </ul>
+
+    </section>
+
+
+    <!-- =====================================================
+         EXPERIENCE
+    ====================================================== -->
+
+    <section class="info experience">
+
+        <div class="info-title">
+            Experience
+        </div>
+
+        <p>
+            Building applications,
+            solving technical problems,
+            experimenting with new systems.
+        </p>
+
+    </section>
+
+
+    <!-- =====================================================
+         PHILOSOPHY
+    ====================================================== -->
+
+    <section class="info philosophy">
+
+        <div class="info-title">
+            Philosophy
+        </div>
+
+        <p>
+            Simple architecture.
+            Practical solutions.
+            Continuous experimentation.
+        </p>
+
+    </section>
+
+
+    <!-- =====================================================
+         TECH STACK
+    ====================================================== -->
+
+    <section class="stack">
+
+        <div class="stack-title">
+            Technology
+        </div>
+
+        <div class="stack-list">
+
+            <span>Python</span>
+            <span>Kotlin</span>
+            <span>Java</span>
+            <span>C++</span>
+            <span>JavaScript</span>
+            <span>Android</span>
+            <span>Linux</span>
+            <span>MySQL</span>
+            <span>Redis</span>
 
         </div>
 
+    </section>
 
-        <div class="project">
 
-            <div class="project-number">
-                02
-            </div>
+    <!-- =====================================================
+         CONNECT
+    ====================================================== -->
 
-            <div class="project-name">
-                Developer Tools
-            </div>
+    <section class="connect">
 
-            <div class="project-description">
-                Small tools and experiments
-                designed to solve practical problems.
-            </div>
-
-            <a
-                class="project-link"
-                href="https://github.com/Cary_A"
-                target="_blank">
-                GITHUB
-            </a>
-
+        <div class="connect-title">
+            Connect
         </div>
 
+        <a href="https://github.com/1976764" target="_blank">
+            GitHub
+        </a>
 
-        <div class="project">
+        <a href="https://1976764.github.io/1976764/" target="_blank">
+            Website
+        </a>
 
-            <div class="project-number">
-                03
-            </div>
-
-            <div class="project-name">
-                Experimental Systems
-            </div>
-
-            <div class="project-description">
-                Hardware, networking,
-                graphics and game development experiments.
-            </div>
-
-            <a
-                class="project-link"
-                href="https://github.com/Cary_A"
-                target="_blank">
-                EXPLORE
-            </a>
-
-        </div>
-
-    </div>
-
-</div>
-```
-
-</section>
-
-<!-- STACK -->
-
-<section>
-
-```
-<div class="grid">
-
-    <div class="section-label">
-        04 / STACK
-    </div>
-
-    <div class="section-content">
-
-        <h2 class="section-title">
-            TOOLS
-        </h2>
+    </section>
 
 
-        <div class="stack">
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
 
-            <div class="stack-item">
-                <div class="stack-number">01</div>
-                <div class="stack-name">Python</div>
-            </div>
+    <footer class="footer">
+        Build · Solve · Share
+    </footer>
 
-            <div class="stack-item">
-                <div class="stack-number">02</div>
-                <div class="stack-name">Kotlin</div>
-            </div>
-
-            <div class="stack-item">
-                <div class="stack-number">03</div>
-                <div class="stack-name">Java</div>
-            </div>
-
-            <div class="stack-item">
-                <div class="stack-number">04</div>
-                <div class="stack-name">C++</div>
-            </div>
-
-            <div class="stack-item">
-                <div class="stack-number">05</div>
-                <div class="stack-name">JavaScript</div>
-            </div>
-
-            <div class="stack-item">
-                <div class="stack-number">06</div>
-                <div class="stack-name">Android</div>
-            </div>
-
-            <div class="stack-item">
-                <div class="stack-number">07</div>
-                <div class="stack-name">Linux</div>
-            </div>
-
-            <div class="stack-item">
-                <div class="stack-number">08</div>
-                <div class="stack-name">MySQL</div>
-            </div>
-
-            <div class="stack-item">
-                <div class="stack-number">09</div>
-                <div class="stack-name">Redis</div>
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-```
-
-</section>
-
-<!-- PRINCIPLES -->
-
-<section>
-
-```
-<div class="grid">
-
-    <div class="section-label">
-        05 / PRINCIPLES
-    </div>
-
-    <div class="section-content">
-
-        <h2 class="section-title">
-            HOW I<br>
-            WORK
-        </h2>
-
-
-        <div class="principle">
-
-            <div class="principle-number">
-                01
-            </div>
-
-            <div class="principle-title">
-                SIMPLE
-            </div>
-
-        </div>
-
-
-        <div class="principle">
-
-            <div class="principle-number">
-                02
-            </div>
-
-            <div class="principle-title">
-                PRACTICAL
-            </div>
-
-        </div>
-
-
-        <div class="principle">
-
-            <div class="principle-number">
-                03
-            </div>
-
-            <div class="principle-title">
-                EXPERIMENTAL
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-```
-
-</section>
-
-<!-- FOOTER -->
-
-<footer>
-
-```
-<div class="footer-grid">
-
-    <div class="footer-name">
-        CARY_A
-    </div>
-
-    <div class="footer-slogan">
-        LESS NOISE. MORE SIGNAL.
-    </div>
-
-    <a
-        class="footer-link"
-        href="https://github.com/Cary_A"
-        target="_blank">
-        GITHUB
-    </a>
-
-</div>
-```
-
-</footer>
 
 </div>
 

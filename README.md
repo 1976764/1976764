@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://1976764.github.io/1976764/" target="_blank">
-    <img src="./profile-preview.png" alt="CARY_A Profile">
+    <img src="./profile-preview.png" alt="CARY_A Profile" width="1600">
   </a>
 </p>
 

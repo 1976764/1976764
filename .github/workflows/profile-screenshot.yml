@@ -79,12 +79,12 @@ jobs:
 
               // CSS viewport
               viewport: {
-                width: 1200,
+                width: 1600,
                 height: 900
               },
 
               // Retina / 2x
-              deviceScaleFactor: 2
+              deviceScaleFactor: 4
 
             });
 

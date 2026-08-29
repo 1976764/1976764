@@ -1,14 +1,9 @@
 name: Update Profile Screenshot
 
 on:
-  push:
-    branches:
-      - main
-
   workflow_dispatch:
 
   schedule:
-    # 每天北京时间 04:00 左右运行
     - cron: "0 20 * * *"
 
 permissions:
@@ -19,37 +14,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ==============================
-      # Checkout
-      # ==============================
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      # ==============================
-      # Node.js
-      # ==============================
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: 24
 
-      # ==============================
-      # Install Playwright
-      # ==============================
       - name: Install Playwright
         run: |
           npm install playwright
           npx playwright install --with-deps chromium
 
-      # ==============================
-      # Take full page screenshot
-      # ==============================
       - name: Capture profile page
         run: |
-          node <<'EOF'
-          const { chromium } = require('playwright');
+          cat > screenshot.js <<'EOF'
+          const { chromium } = require("playwright");
 
           (async () => {
             const browser = await chromium.launch({
@@ -58,71 +41,65 @@ jobs:
 
             const page = await browser.newPage({
               viewport: {
-                width: 1440,
+                width: 1200,
                 height: 900
               },
               deviceScaleFactor: 1
             });
 
             await page.goto(
-              'https://1976764.github.io/1976764/',
+              "https://1976764.github.io/1976764/",
               {
-                waitUntil: 'networkidle',
+                waitUntil: "networkidle",
                 timeout: 120000
               }
             );
 
-            // 等待字体、动画、图片等资源稳定
             await page.waitForTimeout(3000);
 
             await page.screenshot({
-              path: 'profile-preview.png',
+              path: "profile-preview.png",
               fullPage: true,
-              animations: 'disabled'
+              animations: "disabled"
             });
 
             await browser.close();
+
+            console.log("Screenshot completed.");
           })();
           EOF
 
-      # ==============================
-      # Update README
-      # ==============================
+          node screenshot.js
+
       - name: Update README
         run: |
-          python3 <<'PY'
+          python3 -c '
           from pathlib import Path
 
-          readme = Path("README.md")
+          path = Path("README.md")
+          content = path.read_text(encoding="utf-8")
 
           start = "<!-- PROFILE_PREVIEW_START -->"
           end = "<!-- PROFILE_PREVIEW_END -->"
 
-          content = readme.read_text(encoding="utf-8")
+          replacement = """<!-- PROFILE_PREVIEW_START -->
 
-          replacement = f"""{start}
-                        
-                        <p align="center">
-                          <img src="./profile-preview.png" alt="CARY_A Profile Preview">
-                        </p>
-                        
-                        {end}"""
-                        
-                        if start in content and end in content:
-                            before = content.split(start, 1)[0]
-                            after = content.split(end, 1)[1]
-              
-                            content = before + replacement + after
-              
-                        else:
-                            content = replacement + "\n\n" + content
-              
-                        readme.write_text(content, encoding="utf-8")
-                        PY
+          <p align="center">
+            <img src="./profile-preview.png" alt="CARY_A Profile">
+          </p>
 
-      # ==============================
-      # Commit changes
-      # ==============================
+          <!-- PROFILE_PREVIEW_END -->"""
+
+          if start in content and end in content:
+              before = content.split(start, 1)[0]
+              after = content.split(end, 1)[1]
+              content = before + replacement + after
+          else:
+              content = replacement + "\n\n" + content
+
+          path.write_text(content, encoding="utf-8")
+          '
+
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"

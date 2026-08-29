@@ -17,103 +17,202 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      # =====================================================
+      # Checkout
+      # =====================================================
+
       - name: Checkout
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+
+      # =====================================================
+      # Setup Node.js
+      # =====================================================
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: 24
 
+
+      # =====================================================
+      # Install Playwright
+      # =====================================================
+
       - name: Install Playwright
         run: |
           npm install playwright
           npx playwright install --with-deps chromium
 
+
+      # =====================================================
+      # Wait for GitHub Pages
+      # =====================================================
+
+      - name: Wait 60 seconds for GitHub Pages
+        run: |
+          echo "Waiting 60 seconds for GitHub Pages to update..."
+          sleep 60
+
+
+      # =====================================================
+      # Capture profile page
+      # =====================================================
+
       - name: Capture profile page
         run: |
+
           cat > screenshot.js <<'EOF'
+
           const { chromium } = require("playwright");
 
           (async () => {
+
             const browser = await chromium.launch({
               headless: true
             });
 
             const page = await browser.newPage({
+
+              // CSS viewport
               viewport: {
                 width: 1200,
                 height: 900
               },
+
+              // Retina / 2x
               deviceScaleFactor: 2
+
             });
 
-            await page.goto(
-              "https://1976764.github.io/1976764/",
-              {
-                waitUntil: "networkidle",
-                timeout: 120000
-              }
-            );
 
-            await page.waitForTimeout(3000);
+            // =================================================
+            // Open GitHub Pages
+            //
+            // 加时间参数避免 Cloudflare / 浏览器缓存
+            // =================================================
+
+            const url =
+              "https://1976764.github.io/1976764/?v="
+              + Date.now();
+
+            console.log("Opening:");
+            console.log(url);
+
+
+            await page.goto(url, {
+
+              // 等待网络基本稳定
+              waitUntil: "networkidle",
+
+              timeout: 120000
+
+            });
+
+
+            // =================================================
+            // 等待页面渲染
+            // =================================================
+
+            await page.waitForTimeout(5000);
+
+
+            // =================================================
+            // 等待字体加载
+            // =================================================
+
+            await page.evaluate(async () => {
+
+              if (document.fonts) {
+                await document.fonts.ready;
+              }
+
+            });
+
+
+            // =================================================
+            // 禁止动画
+            // =================================================
+
+            await page.addStyleTag({
+              content: `
+                *,
+                *::before,
+                *::after {
+                  animation: none !important;
+                  transition: none !important;
+                }
+              `
+            });
+
+
+            // =================================================
+            // Screenshot
+            // =================================================
 
             await page.screenshot({
+
               path: "profile-preview.png",
+
+              // 完整页面
               fullPage: true,
-              animations: "disabled"
+
+              // PNG 无损
+              type: "png"
+
             });
+
+
+            console.log(
+              "Screenshot completed successfully."
+            );
+
 
             await browser.close();
 
-            console.log("Screenshot completed.");
           })();
+
           EOF
+
 
           node screenshot.js
 
-      - name: Update README
+
+      # =====================================================
+      # Replace screenshot only
+      # =====================================================
+
+      - name: Commit screenshot
         run: |
-          python3 -c '
-          from pathlib import Path
 
-          path = Path("README.md")
-          content = path.read_text(encoding="utf-8")
+          git config user.name \
+            "github-actions[bot]"
 
-          start = "<!-- PROFILE_PREVIEW_START -->"
-          end = "<!-- PROFILE_PREVIEW_END -->"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
 
-          replacement = """<!-- PROFILE_PREVIEW_START -->
 
-          <p align="center">
-            <img src="./profile-preview.png" alt="CARY_A Profile">
-          </p>
+          # 只添加截图
+          git add profile-preview.png
 
-          <!-- PROFILE_PREVIEW_END -->"""
 
-          if start in content and end in content:
-              before = content.split(start, 1)[0]
-              after = content.split(end, 1)[1]
-              content = before + replacement + after
-          else:
-              content = replacement + "\n\n" + content
-
-          path.write_text(content, encoding="utf-8")
-          '
-
-      - name: Commit changes
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add README.md profile-preview.png
-
+          # 如果图片没有变化，不提交
           if git diff --cached --quiet; then
-            echo "No changes detected."
+
+            echo "No screenshot changes detected."
+
             exit 0
+
           fi
 
-          git commit -m "chore: update profile screenshot [skip ci]"
+
+          # 提交截图
+          git commit \
+            -m "chore: update profile screenshot [skip ci]"
+
+
+          # 推送
           git push
